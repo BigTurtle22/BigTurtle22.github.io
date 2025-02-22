@@ -92,20 +92,19 @@
       color: #ff00ff;
     }
 
-    /* Flex container for favorites to arrange items neatly */
+    /* New layout for horizontal titles with proper spacing */
     .favorites {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
-      gap: 30px; /* Add space between sections */
+      justify-content: space-around; /* Ensures equal horizontal spacing */
       padding: 20px;
+      width: 100%;
     }
 
     .favorites > div {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 22%; /* Adjust width for better spacing */
+      width: 20%; /* Adjust width for better spacing */
     }
 
     .favorites ul {
@@ -308,11 +307,7 @@
 
     setInterval(createShootingStar, 2000);
     
-    for (let i = 0; i < 3; i++) {
-      setTimeout(createShootingStar, Math.random() * 1000);
-    }
-
-    // Show home section by default
+    // Initialize sections to be hidden
     showSection('home');
   </script>
 </body>
