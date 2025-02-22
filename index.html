@@ -1,7 +1,230 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding-top: 50px;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.8);
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      z-index: 10;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: underline;
+      font-size: 1.2em;
+      transition: color 0.3s;
+    }
+
+    .nav a:hover {
+      color: #00ffff;
+    }
+
+    .space-container {
+      width: 600px;
+      height: 400px;
+      position: relative;
+      background: #000000;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
+
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2em;
+      white-space: nowrap;
+      background: linear-gradient(
+        to right,
+        #ff0000,
+        #ff8800,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #0000ff,
+        #ff00ff
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 400%;
+      animation: rainbow 10s linear infinite;
+      text-align: center;
+      font-weight: bold;
+      z-index: 2;
+    }
+
+    .socials, .favorites {
+      display: none;
+      color: white;
+      font-size: 1.2em;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .socials a {
+      color: #00ffff;
+      text-decoration: none;
+      display: block;
+      margin: 15px 0;
+      transition: color 0.3s;
+    }
+
+    .socials a:hover {
+      color: #ff00ff;
+    }
+
+    .favorites ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .favorites li {
+      margin: 10px 0;
+    }
+
+    .discord-invite {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00ffff;
+      text-decoration: underline;
+      font-size: 1.1em;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.2; }
+      to { opacity: 0.8; }
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #fff, transparent);
+      transform: rotate(45deg);
+      animation: shoot 2s linear infinite;
+    }
+
+    @keyframes shoot {
+      from {
+        transform: translateX(-100px) translateY(-100px) rotate(45deg);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(700px) translateY(500px) rotate(45deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <nav class="nav">
+    <a href="#socials" onclick="showSection('socials')">Socials</a>
+    <a href="#home" onclick="showSection('home')">Home</a>
+    <a href="#favorites" onclick="showSection('favorites')">Favorites</a>
+  </nav>
+
+  <div class="space-container">
+    <div id="home" class="message">If you're seeing this,<br>turtle wants you to know<br>you're FINE!</div>
+    
+    <div id="socials" class="socials">
+      <a href="https://twitter.com/TurtleOnCoke" target="_blank">Twitter: TurtleOnCoke</a>
+      <a href="https://instagram.com/fyeee.donatello" target="_blank">Instagram: fyeee.donatello</a>
+      <a href="#" onclick="alert('Discord: Turtle')">Discord: Turtle</a>
+      <a href="https://tiktok.com/@i.fw_turtles" target="_blank">TikTok: i.fw_turtles</a>
+      <a href="https://discord.gg/SdCAbXzm" class="discord-invite">Join for trading tips</a>
+    </div>
+
+    <div id="favorites" class="favorites">
+      <ul>
+        <li>🐱 Cats</li>
+        <li>🐕 Dogs</li>
+        <li>🍝 Pasta</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const container = document.querySelector('.space-container');
+    
+    function showSection(section) {
+      document.querySelector('.message').style.display = 'none';
+      document.querySelector('.socials').style.display = 'none';
+      document.querySelector('.favorites').style.display = 'none';
+      
+      if (section === 'home') {
+        document.querySelector('.message').style.display = 'block';
+      } else {
+        document.querySelector('.' + section).style.display = 'block';
+      }
+    }
+
+    // Create stars with different sizes
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      const size = Math.random() * 2;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      container.appendChild(star);
+    }
+
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+      shootingStar.style.left = Math.random() * 30 + '%';
+      shootingStar.style.top = Math.random() * 30 + '%';
+      container.appendChild(shootingStar);
+
+      setTimeout(() => {
+        shootingStar.remove();
+      }, 2000);
+    }
+
+    setInterval(createShootingStar, 3000);
+    
+    for (let i = 0; i < 2; i++) {
+      setTimeout(createShootingStar, Math.random() * 1000);
+    }
+
+    // Show home section by default
+    showSection('home');
+  </script>
 </body>
 </html>
