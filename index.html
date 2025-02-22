@@ -46,7 +46,7 @@
     }
 
     .message {
-      font-size: 4em;
+      font-size: 2.5em;  /* Reduced from 4em */
       white-space: nowrap;
       background: linear-gradient(
         to right,
@@ -105,9 +105,20 @@
       left: 50%;
       transform: translateX(-50%);
       color: #00ffff;
-      text-decoration: underline;
       font-size: 1.3em;
       z-index: 10;
+      text-align: center;
+    }
+
+    .discord-invite span {
+      color: white;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    .discord-invite a {
+      color: #00ffff;
+      text-decoration: underline;
     }
 
     @keyframes rainbow {
@@ -174,7 +185,10 @@
     </div>
   </div>
 
-  <a href="https://discord.gg/SdCAbXzm" class="discord-invite" target="_blank">Join for trading tips</a>
+  <div class="discord-invite">
+    <span>Join for trading tips</span>
+    <a href="https://discord.gg/SdCAbXzm" target="_blank">https://discord.gg/SdCAbXzm</a>
+  </div>
 
   <script>
     function showSection(section) {
