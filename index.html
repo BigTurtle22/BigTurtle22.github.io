@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>  
 <html>
 <head>
   <style>
@@ -97,11 +97,31 @@
       list-style: none;
       padding: 0;
       font-size: 1.2em;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
     }
 
     .favorites li {
-      margin: 20px 0;
+      width: 22%;
+      margin: 10px 0;
       opacity: 0.9;
+    }
+
+    .favorites strong {
+      font-size: 1em; /* Make subtitles smaller */
+      display: block;
+      margin-bottom: 10px;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: normal;
+    }
+
+    .favorites li {
+      font-size: 0.8em; /* Make text under subtitles smaller */
+      font-weight: lighter;
+      color: #ccc; /* Lighter text for readability */
     }
 
     .discord-invite {
@@ -175,8 +195,8 @@
 </head>
 <body>
   <nav class="nav">
-    <a href="#socials" onclick="showSection('socials')">Socials</a>
     <a href="#home" onclick="showSection('home')">Home</a>
+    <a href="#socials" onclick="showSection('socials')">Socials</a>
     <a href="#favorites" onclick="showSection('favorites')">Favorites</a>
   </nav>
 
