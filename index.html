@@ -98,24 +98,26 @@
       justify-content: space-around; /* Ensures equal horizontal spacing */
       padding: 20px;
       width: 100%;
+      gap: 30px; /* Adds space between each column */
     }
 
     .favorites > div {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      width: 20%; /* Adjust width for better spacing */
+      align-items: flex-start;
+      width: 23%; /* Adjust width to allow space between columns */
     }
 
     .favorites ul {
       list-style: none;
       padding: 0;
-      font-size: 0.6em; /* Small font size */
+      font-size: 0.7em; /* Small font size */
       text-align: left;
+      margin: 0;
     }
 
     .favorites li {
-      margin: 10px 0;
+      margin: 5px 0;
       opacity: 0.9;
     }
 
