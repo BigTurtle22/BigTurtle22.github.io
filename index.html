@@ -92,33 +92,37 @@
       color: #ff00ff;
     }
 
-    /* New layout for horizontal titles with proper spacing */
     .favorites {
-      display: flex;
-      justify-content: space-around; /* Ensures equal horizontal spacing */
-      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* Create 4 equal columns */
+      gap: 20px; /* Space between columns */
       width: 100%;
-      gap: 30px; /* Adds space between each column */
+      padding: 20px;
+      margin-top: 60px;
     }
 
     .favorites > div {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      width: 23%; /* Adjust width to allow space between columns */
+      width: 100%;
     }
 
     .favorites ul {
       list-style: none;
       padding: 0;
-      font-size: 0.7em; /* Small font size */
+      font-size: 0.7em;
       text-align: left;
       margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Space between list items */
     }
 
     .favorites li {
-      margin: 5px 0;
+      width: auto;
       opacity: 0.9;
+      margin: 5px 0;
     }
 
     .favorites strong {
@@ -187,11 +191,11 @@
 
     /* New styles for sub-lists */
     .favorites ul {
-      display: block;
+      display: flex;
       justify-content: space-between;
     }
     .favorites li {
-      width: 100%; /* Full width to make it neat */
+      width: auto; /* Ensures items are displayed in a row without too much stretching */
     }
   </style>
 </head>
@@ -288,29 +292,22 @@
       star.className = 'star';
       star.style.left = Math.random() * 100 + 'vw';
       star.style.top = Math.random() * 100 + 'vh';
-      const size = Math.random() * 3;
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.width = Math.random() * 2 + 'px';
+      star.style.height = star.style.width;
       document.body.appendChild(star);
     }
 
-    function createShootingStar() {
+    // Create shooting stars
+    setInterval(() => {
       const shootingStar = document.createElement('div');
       shootingStar.className = 'shooting-star';
-      shootingStar.style.left = Math.random() * 30 + 'vw';
-      shootingStar.style.top = Math.random() * 30 + 'vh';
+      shootingStar.style.left = Math.random() * 100 + 'vw';
+      shootingStar.style.top = Math.random() * 100 + 'vh';
       document.body.appendChild(shootingStar);
-
       setTimeout(() => {
         shootingStar.remove();
       }, 2000);
-    }
-
-    setInterval(createShootingStar, 2000);
-    
-    // Initialize sections to be hidden
-    showSection('home');
+    }, 1000);
   </script>
 </body>
 </html>
