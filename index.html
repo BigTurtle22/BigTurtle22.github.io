@@ -11,6 +11,51 @@
       overflow-x: hidden;
     }
 
+    /* Star background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 1s infinite alternate;
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: shoot 4s linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes shoot {
+      0% {
+        transform: translateY(-5vh);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh);
+        opacity: 0;
+      }
+    }
+
+    /* Rest of your existing styles */
     .nav {
       position: fixed;
       top: 0;
@@ -42,6 +87,8 @@
       justify-content: center;
       align-items: center;
       padding-top: 60px;
+      position: relative;
+      z-index: 1;
     }
 
     .message {
@@ -132,6 +179,8 @@
   </style>
 </head>
 <body>
+  <div class="stars"></div>
+  
   <nav class="nav">
     <a href="#socials" onclick="showSection('socials')">Socials</a>
     <a href="#home" onclick="showSection('home')">Home</a>
@@ -196,11 +245,12 @@
           <li>Wagyu</li>
           <li>Sushi</li>
           <li>Soup</li>
+          <li>Watermelon</li>
+          <li>Chicken</li>
         </ul>
       </div>
     </div>
 
-    <!-- Contact Me Section -->
     <div id="contact" class="contact-form">
       <h2 style="color: #00ffff;">Hit Me Up!!</h2>
       <form action="https://formspree.io/f/xrbedvla" method="POST">
@@ -211,6 +261,54 @@
   </div>
 
   <script>
+    // Function to create stars
+    function createStars() {
+      const starsContainer = document.querySelector('.stars');
+      const numberOfStars = 200;
+
+      for (let i = 0; i < numberOfStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random size
+        const size = Math.random() * 3;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Random twinkle delay
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Function to create shooting stars
+    function createShootingStar() {
+      const starsContainer = document.querySelector('.stars');
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+      
+      // Random horizontal position
+      shootingStar.style.left = `${Math.random() * 100}%`;
+      
+      starsContainer.appendChild(shootingStar);
+      
+      // Remove the shooting star after animation
+      setTimeout(() => {
+        shootingStar.remove();
+      }, 4000);
+    }
+
+    // Initialize stars
+    createStars();
+
+    // Create shooting stars periodically
+    setInterval(createShootingStar, 10000);
+
     function showSection(section) {
       document.querySelector('.message').style.display = 'none';
       document.querySelector('.socials').style.display = 'none';
