@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body, html {
       margin: 0;
@@ -206,11 +203,10 @@
     <!-- Contact Me Section -->
     <div id="contact" class="contact-form">
       <h2 style="color: #00ffff;">Hit Me Up!!</h2>
-      <form action="https://formspree.io/f/xrbedvla" method="POST" onsubmit="showThankYouMessage(event)">
+      <form action="https://formspree.io/f/xrbedvla" method="POST">
         <textarea name="message" placeholder="Type your message here..."></textarea>
         <button type="submit">Send Message</button>
       </form>
-      <div id="thank-you-message" style="display: none; color: #00ff00;">Thank you for your message! Redirecting...</div>
     </div>
   </div>
 
@@ -230,17 +226,6 @@
 
     // Initialize sections to be hidden
     showSection('home');
-
-    function showThankYouMessage(event) {
-      event.preventDefault(); // Prevent form from submitting immediately
-      document.querySelector('.contact-form').style.display = 'none'; // Hide the form
-      document.querySelector('#thank-you-message').style.display = 'block'; // Show the thank you message
-      
-      // Redirect to the home page after 3 seconds
-      setTimeout(function() {
-        window.location.href = '#home';
-      }, 3000);
-    }
   </script>
 </body>
 </html>
