@@ -71,7 +71,7 @@
       transform: translate(-50%, -50%);
     }
 
-    .socials, .favorites, .contact-form {
+    .socials, .favorites, .contact-form, .forum {
       display: none;
       color: white;
       font-size: 1.8em;
@@ -125,6 +125,53 @@
       background-color: #ff00ff;
     }
 
+    .forum textarea {
+      width: 80%;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      resize: none;
+    }
+
+    .forum input[type="file"] {
+      color: #00ffff;
+    }
+
+    .forum button {
+      background-color: #00ffff;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    .forum button:hover {
+      background-color: #ff00ff;
+    }
+
+    .posts {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .post {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      width: 80%;
+      text-align: left;
+    }
+
     @keyframes rainbow {
       0% { background-position: 0% 50%; }
       100% { background-position: 400% 50%; }
@@ -137,6 +184,7 @@
     <a href="#home" onclick="showSection('home')">Home</a>
     <a href="#favorites" onclick="showSection('favorites')">Favorites</a>
     <a href="#contact" onclick="showSection('contact-form')">Contact Me</a>
+    <a href="#forum" onclick="showSection('forum')">Forum</a>
   </nav>
 
   <div class="content-container">
@@ -208,6 +256,19 @@
         <button type="submit">Send Message</button>
       </form>
     </div>
+
+    <!-- Forum Section -->
+    <div id="forum" class="forum">
+      <h2 style="color: #00ffff;">Forum</h2>
+      <form id="postForm">
+        <textarea id="postMessage" placeholder="Type your message here..."></textarea>
+        <input type="file" id="postImage" />
+        <button type="submit">Post</button>
+      </form>
+      <div class="posts" id="posts">
+        <!-- Posts will be displayed here -->
+      </div>
+    </div>
   </div>
 
   <script>
@@ -216,6 +277,7 @@
       document.querySelector('.socials').style.display = 'none';
       document.querySelector('.favorites').style.display = 'none';
       document.querySelector('.contact-form').style.display = 'none';
+      document.querySelector('.forum').style.display = 'none';
       
       if (section === 'home') {
         document.querySelector('.message').style.display = 'block';
@@ -226,6 +288,40 @@
 
     // Initialize sections to be hidden
     showSection('home');
+
+    // Function to handle the post submission
+    document.getElementById('postForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const message = document.getElementById('postMessage').value;
+      const imageFile = document.getElementById('postImage').files[0];
+
+      // Create the post container
+      const postContainer = document.createElement('div');
+      postContainer.classList.add('post');
+      
+      // Add message
+      const messageElement = document.createElement('p');
+      messageElement.textContent = message;
+      postContainer.appendChild(messageElement);
+      
+      // Add image if any
+      if (imageFile) {
+        const imageElement = document.createElement('img');
+        imageElement.src = URL.createObjectURL(imageFile);
+        imageElement.alt = 'Uploaded Image';
+        imageElement.style.maxWidth = '100%';
+        postContainer.appendChild(imageElement);
+      }
+
+      // Add the post to the posts container
+      const postsContainer = document.getElementById('posts');
+      postsContainer.appendChild(postContainer);
+      
+      // Reset form
+      document.getElementById('postMessage').value = '';
+      document.getElementById('postImage').value = '';
+    });
   </script>
 </body>
 </html>
