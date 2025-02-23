@@ -72,7 +72,7 @@
       transform: translate(-50%, -50%);
     }
 
-    .socials, .favorites {
+    .socials, .favorites, .contact-form {
       display: none;
       color: white;
       font-size: 1.8em;
@@ -92,106 +92,43 @@
       color: #ff00ff;
     }
 
-    /* New layout for horizontal titles with proper spacing */
-    .favorites {
-      display: flex;
-      justify-content: space-around; /* Ensures equal horizontal spacing */
-      padding: 20px;
-      width: 100%;
-      gap: 30px; /* Adds space between each column */
-    }
-
-    .favorites > div {
+    .contact-form {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      width: 23%; /* Adjust width to allow space between columns */
+      align-items: center;
+      padding: 20px;
     }
 
-    .favorites ul {
-      list-style: none;
-      padding: 0;
-      font-size: 0.7em; /* Small font size */
-      text-align: left;
-      margin: 0;
-    }
-
-    .favorites li {
-      margin: 5px 0;
-      opacity: 0.9;
-    }
-
-    .favorites strong {
-      font-size: 0.8em;
-      margin-bottom: 10px;
-    }
-
-    .discord-invite {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #00ffff;
-      font-size: 1.3em;
-      z-index: 10;
-      text-align: center;
-    }
-
-    .discord-invite span {
+    .contact-form textarea {
+      width: 80%;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      text-decoration: none;
-      margin-right: 10px;
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      resize: none;
     }
 
-    .discord-invite a {
-      color: #00ffff;
-      text-decoration: underline;
+    .contact-form button {
+      background-color: #00ffff;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    .contact-form button:hover {
+      background-color: #ff00ff;
     }
 
     @keyframes rainbow {
       0% { background-position: 0% 50%; }
       100% { background-position: 400% 50%; }
-    }
-
-    .star {
-      position: fixed;
-      background: #fff;
-      border-radius: 50%;
-      animation: twinkle 3s infinite ease-in-out alternate;
-    }
-
-    @keyframes twinkle {
-      from { opacity: 0.2; }
-      to { opacity: 0.8; }
-    }
-
-    .shooting-star {
-      position: fixed;
-      width: 3px;
-      height: 3px;
-      background: linear-gradient(to right, transparent, #fff, transparent);
-      transform: rotate(45deg);
-      animation: shoot 2s linear infinite;
-    }
-
-    @keyframes shoot {
-      from {
-        transform: translateX(-100px) translateY(-100px) rotate(45deg);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(200vw) translateY(200vh) rotate(45deg);
-        opacity: 0;
-      }
-    }
-
-    /* New styles for sub-lists */
-    .favorites ul {
-      display: block;
-      justify-content: space-between;
-    }
-    .favorites li {
-      width: 100%; /* Full width to make it neat */
     }
   </style>
 </head>
@@ -200,6 +137,7 @@
     <a href="#socials" onclick="showSection('socials')">Socials</a>
     <a href="#home" onclick="showSection('home')">Home</a>
     <a href="#favorites" onclick="showSection('favorites')">Favorites</a>
+    <a href="#contact" onclick="showSection('contact-form')">Contact Me</a>
   </nav>
 
   <div class="content-container">
@@ -262,11 +200,15 @@
         </ul>
       </div>
     </div>
-  </div>
 
-  <div class="discord-invite">
-    <span>Join for trading tips</span>
-    <a href="https://discord.gg/SdCAbXzm" target="_blank">https://discord.gg/SdCAbXzm</a>
+    <!-- Contact Me Section -->
+    <div id="contact" class="contact-form">
+      <h2 style="color: #00ffff;">Hit Me Up!!</h2>
+      <form action="https://formspree.io/f/xrbedvla" method="POST">
+        <textarea name="message" placeholder="Type your message here..."></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
   </div>
 
   <script>
@@ -274,6 +216,7 @@
       document.querySelector('.message').style.display = 'none';
       document.querySelector('.socials').style.display = 'none';
       document.querySelector('.favorites').style.display = 'none';
+      document.querySelector('.contact-form').style.display = 'none';
       
       if (section === 'home') {
         document.querySelector('.message').style.display = 'block';
@@ -282,33 +225,6 @@
       }
     }
 
-    // Create stars
-    for (let i = 0; i < 300; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.left = Math.random() * 100 + 'vw';
-      star.style.top = Math.random() * 100 + 'vh';
-      const size = Math.random() * 3;
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.animationDelay = Math.random() * 3 + 's';
-      document.body.appendChild(star);
-    }
-
-    function createShootingStar() {
-      const shootingStar = document.createElement('div');
-      shootingStar.className = 'shooting-star';
-      shootingStar.style.left = Math.random() * 30 + 'vw';
-      shootingStar.style.top = Math.random() * 30 + 'vh';
-      document.body.appendChild(shootingStar);
-
-      setTimeout(() => {
-        shootingStar.remove();
-      }, 2000);
-    }
-
-    setInterval(createShootingStar, 2000);
-    
     // Initialize sections to be hidden
     showSection('home');
   </script>
