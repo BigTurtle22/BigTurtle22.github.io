@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Game Hub</title>
     <style>
-        /* [Previous CSS remains unchanged] */
         * {
             margin: 0;
             padding: 0;
@@ -120,7 +119,7 @@
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
         }
         
         .close-btn {
@@ -146,9 +145,9 @@
             background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             padding: 20px;
-            min-height: 300px;
+            height: 500px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
         }
         
@@ -159,124 +158,11 @@
             color: #f0f0f0;
         }
         
-        canvas {
-            background: #000;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            display: block;
-            margin: 0 auto;
-        }
-        
-        .game-controls {
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        .game-btn {
-            background: #e94560;
-            color: white;
+        iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .game-btn:hover {
-            background: #ff2e63;
-        }
-        
-        .memory-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .memory-card {
-            height: 80px;
-            background: #0f3460;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: transparent;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s;
-        }
-        
-        .memory-card.flipped {
-            background: #1a1a2e;
-            color: white;
-        }
-        
-        .memory-card.matched {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .quiz-container {
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        .quiz-question {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .quiz-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-        
-        .quiz-option {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .quiz-option:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .quiz-option.correct {
-            background: #4caf50;
-        }
-        
-        .quiz-option.incorrect {
-            background: #f44336;
-        }
-        
-        .typing-container {
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        .typing-text {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.6;
-        }
-        
-        .typing-input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 8px;
-            border: none;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 20px;
         }
         
         footer {
@@ -290,7 +176,7 @@
             h1 { font-size: 2.5rem; }
             .game-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
             .modal-content { width: 95%; padding: 20px; }
-            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .game-container { height: 400px; }
         }
     </style>
 </head>
@@ -385,7 +271,6 @@
             <button class="close-btn" onclick="closeGame()">✕</button>
             <h2 class="game-title" id="currentGameTitle">Game Title</h2>
             <div class="game-container" id="gameContainer"></div>
-            <div class="game-controls" id="gameControls"></div>
         </div>
     </div>
     
@@ -394,627 +279,40 @@
     </footer>
     
     <script>
-        window.gameIntervals = [];
-        window.gameTimeouts = [];
-        window.gameAnimationFrame = null;
-
         function openGame(gameId) {
             const modal = document.getElementById('gameModal');
             const gameTitle = document.getElementById('currentGameTitle');
             const gameContainer = document.getElementById('gameContainer');
-            const gameControls = document.getElementById('gameControls');
             
             modal.style.display = 'flex';
             gameContainer.innerHTML = '';
-            gameControls.innerHTML = '';
             
-            window.gameIntervals.forEach(clearInterval);
-            window.gameIntervals = [];
-            window.gameTimeouts.forEach(clearTimeout);
-            window.gameTimeouts = [];
-            if (window.gameAnimationFrame) {
-                cancelAnimationFrame(window.gameAnimationFrame);
-                window.gameAnimationFrame = null;
-            }
+            const gameSources = {
+                'snake': { title: 'Snake Game', url: 'https://playsnake.org/' },
+                'memory': { title: 'Memory Match', url: 'https://www.coolmathgames.com/0-memory' },
+                'breakout': { title: 'Breakout', url: 'https://www.coolmathgames.com/0-breakout' },
+                'quiz': { title: 'Quiz Game', url: 'https://www.coolmathgames.com/0-trivia-jump' },
+                'typing': { title: 'Speed Typing', url: 'https://www.typing.com/student/game/keyboard-kenny' },
+                'hangman': { title: 'Hangman', url: 'https://www.coolmathgames.com/0-hangman' },
+                'tictactoe': { title: 'Tic Tac Toe', url: 'https://www.coolmathgames.com/0-tic-tac-toe' },
+                'whack': { title: 'Whack-a-Mole', url: 'https://www.coolmathgames.com/0-whack-a-mole' },
+                'pong': { title: 'Pong', url: 'https://www.coolmathgames.com/0-pong-2' },
+                'platformer': { title: 'Mini Platformer', url: 'https://www.coolmathgames.com/0-run-3' },
+                'wordle': { title: 'Wordle', url: 'https://www.nytimes.com/games/wordle/index.html' },
+                'flappy': { title: 'Flappy Bird', url: 'https://www.coolmathgames.com/0-flappy-tower-tiny-square' },
+                'basketball': { title: 'Basketball', url: 'https://www.coolmathgames.com/0-basketball-master-2' },
+                'slope': { title: 'Slope', url: 'https://www.coolmathgames.com/0-slope' },
+                'pattern': { title: 'Pattern Memory', url: 'https://www.coolmathgames.com/0-pattern-memory' }
+            };
             
-            switch(gameId) {
-                case 'snake': gameTitle.textContent = 'Snake Game'; initSnakeGame(); break;
-                case 'memory': gameTitle.textContent = 'Memory Match'; initMemoryGame(); break;
-                case 'breakout': gameTitle.textContent = 'Breakout'; initBreakoutGame(); break;
-                case 'quiz': gameTitle.textContent = 'Quiz Game'; initQuizGame(); break;
-                case 'typing': gameTitle.textContent = 'Speed Typing'; initTypingGame(); break;
-                case 'hangman': gameTitle.textContent = 'Hangman'; initHangmanGame(); break;
-                case 'tictactoe': gameTitle.textContent = 'Tic Tac Toe'; initTicTacToeGame(); break;
-                case 'whack': gameTitle.textContent = 'Whack-a-Mole'; initWhackAMoleGame(); break;
-                case 'pong': gameTitle.textContent = 'Pong'; initPongGame(); break;
-                case 'platformer': gameTitle.textContent = 'Mini Platformer'; initPlatformerGame(); break;
-                case 'wordle': gameTitle.textContent = 'Wordle'; initWordleGame(); break;
-                case 'flappy': gameTitle.textContent = 'Flappy Bird'; initFlappyBirdGame(); break;
-                case 'basketball': gameTitle.textContent = 'Basketball'; initBasketballGame(); break;
-                case 'slope': gameTitle.textContent = 'Slope'; initSlopeGame(); break;
-                case 'pattern': gameTitle.textContent = 'Pattern Memory'; initPatternMemoryGame(); break;
-            }
+            const game = gameSources[gameId];
+            gameTitle.textContent = game.title;
+            gameContainer.innerHTML = `<iframe src="${game.url}" allowfullscreen></iframe>`;
         }
         
         function closeGame() {
             document.getElementById('gameModal').style.display = 'none';
-            window.gameIntervals.forEach(clearInterval);
-            window.gameIntervals = [];
-            window.gameTimeouts.forEach(clearTimeout);
-            window.gameTimeouts = [];
-            if (window.gameAnimationFrame) {
-                cancelAnimationFrame(window.gameAnimationFrame);
-                window.gameAnimationFrame = null;
-            }
-        }
-
-        // 1. Snake Game - Fully Functional
-        function initSnakeGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            const gameControls = document.getElementById('gameControls');
-            
-            gameContainer.innerHTML = '<canvas id="snakeCanvas" width="400" height="400"></canvas>';
-            gameControls.innerHTML = `
-                <button class="game-btn" id="snakeStartBtn">Start Game</button>
-                <p>Use arrow keys or WASD to move</p>
-                <p id="snakeScore">Score: 0</p>
-            `;
-            
-            const canvas = document.getElementById('snakeCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('snakeScore');
-            
-            let snake = [{x: 10, y: 10}];
-            let food = {x: 5, y: 5};
-            let direction = 'right';
-            let score = 0;
-            let gameSpeed = 100;
-            let gameRunning = false;
-            
-            function drawSnake() {
-                ctx.fillStyle = '#4CAF50';
-                snake.forEach(segment => {
-                    ctx.fillRect(segment.x * 20, segment.y * 20, 18, 18);
-                });
-                ctx.fillStyle = '#2E7D32';
-                ctx.fillRect(snake[0].x * 20, snake[0].y * 20, 18, 18);
-            }
-            
-            function drawFood() {
-                ctx.fillStyle = '#FF5722';
-                ctx.beginPath();
-                ctx.arc(food.x * 20 + 9, food.y * 20 + 9, 9, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            function clearCanvas() {
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            
-            function moveSnake() {
-                if (!gameRunning) return;
-                
-                const head = {x: snake[0].x, y: snake[0].y};
-                switch(direction) {
-                    case 'right': head.x++; break;
-                    case 'left': head.x--; break;
-                    case 'up': head.y--; break;
-                    case 'down': head.y++; break;
-                }
-                
-                snake.unshift(head);
-                
-                if (head.x === food.x && head.y === food.y) {
-                    score += 10;
-                    generateFood();
-                } else {
-                    snake.pop();
-                }
-                
-                if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
-                    endGame();
-                    return;
-                }
-                
-                clearCanvas();
-                drawFood();
-                drawSnake();
-                scoreDisplay.textContent = `Score: ${score}`;
-            }
-            
-            function generateFood() {
-                food.x = Math.floor(Math.random() * 20);
-                food.y = Math.floor(Math.random() * 20);
-                if (snake.some(s => s.x === food.x && s.y === food.y)) generateFood();
-            }
-            
-            function startGame() {
-                if (!gameRunning) {
-                    gameRunning = true;
-                    snake = [{x: 10, y: 10}];
-                    direction = 'right';
-                    score = 0;
-                    generateFood();
-                    clearCanvas();
-                    drawSnake();
-                    drawFood();
-                    scoreDisplay.textContent = `Score: ${score}`;
-                    const interval = setInterval(moveSnake, gameSpeed);
-                    window.gameIntervals.push(interval);
-                }
-            }
-            
-            function endGame() {
-                gameRunning = false;
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#fff';
-                ctx.font = '30px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2);
-                ctx.font = '20px Arial';
-                ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 30);
-            }
-            
-            document.getElementById('snakeStartBtn').addEventListener('click', startGame);
-            document.addEventListener('keydown', e => {
-                if (!gameRunning) return;
-                switch(e.key) {
-                    case 'ArrowUp': case 'w': if (direction !== 'down') direction = 'up'; break;
-                    case 'ArrowDown': case 's': if (direction !== 'up') direction = 'down'; break;
-                    case 'ArrowLeft': case 'a': if (direction !== 'right') direction = 'left'; break;
-                    case 'ArrowRight': case 'd': if (direction !== 'left') direction = 'right'; break;
-                }
-            });
-            
-            clearCanvas();
-            drawSnake();
-            drawFood();
-        }
-
-        // 2. Memory Match - Fully Functional
-        function initMemoryGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            const gameControls = document.getElementById('gameControls');
-            
-            gameContainer.innerHTML = `
-                <div class="memory-grid" id="memoryGrid"></div>
-                <p id="memoryStatus">Matches: 0 / 8</p>
-            `;
-            gameControls.innerHTML = '<button class="game-btn" onclick="resetMemoryGame()">Reset Game</button>';
-            
-            const memoryGrid = document.getElementById('memoryGrid');
-            let cards = ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H'];
-            cards = cards.sort(() => Math.random() - 0.5);
-            let flippedCards = [];
-            let matchedPairs = 0;
-            
-            function setupGame() {
-                memoryGrid.innerHTML = '';
-                cards.forEach(card => {
-                    const cardElement = document.createElement('div');
-                    cardElement.classList.add('memory-card');
-                    cardElement.dataset.value = card;
-                    cardElement.addEventListener('click', () => flipCard(cardElement));
-                    memoryGrid.appendChild(cardElement);
-                });
-            }
-            
-            function flipCard(card) {
-                if (flippedCards.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
-                    card.classList.add('flipped');
-                    card.textContent = card.dataset.value;
-                    flippedCards.push(card);
-                    
-                    if (flippedCards.length === 2) {
-                        setTimeout(checkMatch, 1000);
-                    }
-                }
-            }
-            
-            function checkMatch() {
-                if (flippedCards[0].dataset.value === flippedCards[1].dataset.value) {
-                    flippedCards.forEach(card => card.classList.add('matched'));
-                    matchedPairs++;
-                    document.getElementById('memoryStatus').textContent = `Matches: ${matchedPairs} / 8`;
-                    if (matchedPairs === 8) {
-                        setTimeout(() => alert('You Win!'), 500);
-                    }
-                } else {
-                    flippedCards.forEach(card => {
-                        card.classList.remove('flipped');
-                        card.textContent = '';
-                    });
-                }
-                flippedCards = [];
-            }
-            
-            window.resetMemoryGame = function() {
-                cards = cards.sort(() => Math.random() - 0.5);
-                flippedCards = [];
-                matchedPairs = 0;
-                document.getElementById('memoryStatus').textContent = `Matches: 0 / 8`;
-                setupGame();
-            };
-            
-            setupGame();
-        }
-
-        // 3. Breakout - Fully Functional
-        function initBreakoutGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            const gameControls = document.getElementById('gameControls');
-            
-            gameContainer.innerHTML = '<canvas id="breakoutCanvas" width="480" height="320"></canvas>';
-            gameControls.innerHTML = `
-                <button class="game-btn" id="breakoutStartBtn">Start Game</button>
-                <p>Use mouse or arrow keys to move</p>
-                <p id="breakoutScore">Score: 0</p>
-            `;
-            
-            const canvas = document.getElementById('breakoutCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('breakoutScore');
-            
-            let ballX = canvas.width / 2;
-            let ballY = canvas.height - 30;
-            let ballDX = 2;
-            let ballDY = -2;
-            const ballRadius = 10;
-            const paddleHeight = 10;
-            const paddleWidth = 75;
-            let paddleX = (canvas.width - paddleWidth) / 2;
-            const brickRowCount = 3;
-            const brickColumnCount = 5;
-            const brickWidth = 75;
-            const brickHeight = 20;
-            const brickPadding = 10;
-            const brickOffsetTop = 30;
-            const brickOffsetLeft = 30;
-            let bricks = [];
-            let score = 0;
-            let gameRunning = false;
-            
-            for (let c = 0; c < brickColumnCount; c++) {
-                bricks[c] = [];
-                for (let r = 0; r < brickRowCount; r++) {
-                    bricks[c][r] = { x: 0, y: 0, status: 1 };
-                }
-            }
-            
-            function drawBall() {
-                ctx.beginPath();
-                ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-                ctx.fillStyle = '#0095DD';
-                ctx.fill();
-                ctx.closePath();
-            }
-            
-            function drawPaddle() {
-                ctx.beginPath();
-                ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-                ctx.fillStyle = '#0095DD';
-                ctx.fill();
-                ctx.closePath();
-            }
-            
-            function drawBricks() {
-                for (let c = 0; c < brickColumnCount; c++) {
-                    for (let r = 0; r < brickRowCount; r++) {
-                        if (bricks[c][r].status === 1) {
-                            const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-                            const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-                            bricks[c][r].x = brickX;
-                            bricks[c][r].y = brickY;
-                            ctx.beginPath();
-                            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                            ctx.fillStyle = '#0095DD';
-                            ctx.fill();
-                            ctx.closePath();
-                        }
-                    }
-                }
-            }
-            
-            function collisionDetection() {
-                for (let c = 0; c < brickColumnCount; c++) {
-                    for (let r = 0; r < brickRowCount; r++) {
-                        const b = bricks[c][r];
-                        if (b.status === 1 && ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight) {
-                            ballDY = -ballDY;
-                            b.status = 0;
-                            score += 10;
-                            scoreDisplay.textContent = `Score: ${score}`;
-                            if (score === brickRowCount * brickColumnCount * 10) {
-                                endGame('YOU WIN!');
-                            }
-                        }
-                    }
-                }
-            }
-            
-            function draw() {
-                if (!gameRunning) return;
-                
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawBricks();
-                drawBall();
-                drawPaddle();
-                collisionDetection();
-                
-                if (ballX + ballDX < ballRadius || ballX + ballDX > canvas.width - ballRadius) ballDX = -ballDX;
-                if (ballY + ballDY < ballRadius) ballDY = -ballDY;
-                else if (ballY + ballDY > canvas.height - ballRadius - paddleHeight) {
-                    if (ballX > paddleX && ballX < paddleX + paddleWidth) ballDY = -ballDY;
-                    else endGame('Game Over!');
-                }
-                
-                ballX += ballDX;
-                ballY += ballDY;
-                window.gameAnimationFrame = requestAnimationFrame(draw);
-            }
-            
-            function startGame() {
-                if (!gameRunning) {
-                    gameRunning = true;
-                    draw();
-                }
-            }
-            
-            function endGame(message) {
-                gameRunning = false;
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#fff';
-                ctx.font = '30px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(message, canvas.width / 2, canvas.height / 2);
-                ctx.font = '20px Arial';
-                ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 30);
-            }
-            
-            function resetGame() {
-                ballX = canvas.width / 2;
-                ballY = canvas.height - 30;
-                ballDX = 2;
-                ballDY = -2;
-                paddleX = (canvas.width - paddleWidth) / 2;
-                score = 0;
-                scoreDisplay.textContent = `Score: 0`;
-                for (let c = 0; c < brickColumnCount; c++) {
-                    for (let r = 0; r < brickRowCount; r++) {
-                        bricks[c][r].status = 1;
-                    }
-                }
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawBricks();
-                drawBall();
-                drawPaddle();
-            }
-            
-            document.getElementById('breakoutStartBtn').addEventListener('click', () => {
-                resetGame();
-                startGame();
-            });
-            
-            document.addEventListener('mousemove', e => {
-                const relativeX = e.clientX - canvas.getBoundingClientRect().left;
-                if (relativeX > 0 && relativeX < canvas.width) {
-                    paddleX = relativeX - paddleWidth / 2;
-                    if (paddleX < 0) paddleX = 0;
-                    if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
-                }
-            });
-            
-            document.addEventListener('keydown', e => {
-                if (e.key === 'ArrowLeft' && paddleX > 0) paddleX -= 20;
-                if (e.key === 'ArrowRight' && paddleX + paddleWidth < canvas.width) paddleX += 20;
-            });
-            
-            resetGame();
-        }
-
-        // 4. Quiz Game - Fully Functional
-        function initQuizGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            const gameControls = document.getElementById('gameControls');
-            
-            gameContainer.innerHTML = `
-                <div class="quiz-container">
-                    <div class="quiz-question" id="quizQuestion"></div>
-                    <div class="quiz-options" id="quizOptions"></div>
-                    <p id="quizScore">Score: 0 / 0</p>
-                </div>
-            `;
-            gameControls.innerHTML = '<button class="game-btn" onclick="resetQuizGame()">New Game</button>';
-            
-            const questions = [
-                { question: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], answer: "Paris" },
-                { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: "Mars" },
-                { question: "What is 2 + 2?", options: ["3", "4", "5", "6"], answer: "4" },
-                { question: "Which element has the symbol H?", options: ["Helium", "Hydrogen", "Hafnium", "Hassium"], answer: "Hydrogen" }
-            ];
-            
-            let currentQuestion = 0;
-            let score = 0;
-            let total = 0;
-            
-            function loadQuestion() {
-                const q = questions[currentQuestion];
-                document.getElementById('quizQuestion').textContent = q.question;
-                const optionsContainer = document.getElementById('quizOptions');
-                optionsContainer.innerHTML = '';
-                q.options.forEach(option => {
-                    const optionElement = document.createElement('div');
-                    optionElement.classList.add('quiz-option');
-                    optionElement.textContent = option;
-                    optionElement.addEventListener('click', () => checkAnswer(option, q.answer));
-                    optionsContainer.appendChild(optionElement);
-                });
-                document.getElementById('quizScore').textContent = `Score: ${score} / ${total}`;
-            }
-            
-            function checkAnswer(selected, correct) {
-                total++;
-                const options = document.querySelectorAll('.quiz-option');
-                options.forEach(opt => {
-                    opt.style.pointerEvents = 'none';
-                    if (opt.textContent === correct) opt.classList.add('correct');
-                    if (opt.textContent === selected && selected !== correct) opt.classList.add('incorrect');
-                });
-                
-                if (selected === correct) score++;
-                document.getElementById('quizScore').textContent = `Score: ${score} / ${total}`;
-                
-                setTimeout(() => {
-                    currentQuestion++;
-                    if (currentQuestion < questions.length) loadQuestion();
-                    else endGame();
-                }, 1000);
-            }
-            
-            function endGame() {
-                document.getElementById('quizQuestion').textContent = 'Quiz Complete!';
-                document.getElementById('quizOptions').innerHTML = '';
-                document.getElementById('quizScore').textContent = `Final Score: ${score} / ${total}`;
-            }
-            
-            window.resetQuizGame = function() {
-                currentQuestion = 0;
-                score = 0;
-                total = 0;
-                loadQuestion();
-            };
-            
-            loadQuestion();
-        }
-
-        // 5. Speed Typing - Fully Functional
-        function initTypingGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            const gameControls = document.getElementById('gameControls');
-            
-            gameContainer.innerHTML = `
-                <div class="typing-container">
-                    <div class="typing-text" id="typingText"></div>
-                    <input type="text" class="typing-input" id="typingInput" placeholder="Start typing here...">
-                    <p id="typingStats">WPM: 0 | Accuracy: 100%</p>
-                </div>
-            `;
-            gameControls.innerHTML = '<button class="game-btn" onclick="resetTypingGame()">New Text</button>';
-            
-            const texts = [
-                "The quick brown fox jumps over the lazy dog.",
-                "Typing is a valuable skill in the digital age.",
-                "Practice makes perfect when it comes to speed.",
-                "Learning to code can open many opportunities."
-            ];
-            
-            let currentText = texts[0];
-            let startTime = null;
-            let typedChars = 0;
-            let errors = 0;
-            
-            function loadText() {
-                document.getElementById('typingText').textContent = currentText;
-                document.getElementById('typingInput').value = '';
-                document.getElementById('typingStats').textContent = 'WPM: 0 | Accuracy: 100%';
-                startTime = null;
-                typedChars = 0;
-                errors = 0;
-            }
-            
-            document.getElementById('typingInput').addEventListener('input', e => {
-                if (!startTime) startTime = Date.now();
-                
-                const typed = e.target.value;
-                typedChars = typed.length;
-                errors = 0;
-                
-                for (let i = 0; i < typed.length; i++) {
-                    if (typed[i] !== currentText[i]) errors++;
-                }
-                
-                const timeElapsed = (Date.now() - startTime) / 60000;
-                const wpm = Math.round((typedChars / 5) / timeElapsed) || 0;
-                const accuracy = Math.round(((currentText.length - errors) / currentText.length) * 100) || 100;
-                
-                document.getElementById('typingStats').textContent = `WPM: ${wpm} | Accuracy: ${accuracy}%`;
-                
-                if (typed === currentText) {
-                    alert(`Well done! WPM: ${wpm}, Accuracy: ${accuracy}%`);
-                    resetTypingGame();
-                }
-            });
-            
-            window.resetTypingGame = function() {
-                currentText = texts[Math.floor(Math.random() * texts.length)];
-                loadText();
-            };
-            
-            loadText();
-        }
-
-        // Basic Skeletons for Remaining Games (Functional but Simplified)
-        function initHangmanGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Hangman game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initTicTacToeGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Tic Tac Toe game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initWhackAMoleGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Whack-a-Mole game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initPongGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Pong game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initPlatformerGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Mini Platformer game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initWordleGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Wordle game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initFlappyBirdGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Flappy Bird game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initBasketballGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Basketball game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initSlopeGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Slope game is under construction.</p>';
-            // Add full implementation here if desired
-        }
-        
-        function initPatternMemoryGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.innerHTML = '<p>Pattern Memory game is under construction.</p>';
-            // Add full implementation here if desired
+            document.getElementById('gameContainer').innerHTML = '';
         }
     </script>
 </body>
