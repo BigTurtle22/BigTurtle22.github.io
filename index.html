@@ -149,6 +149,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+            text-align: center;
         }
         
         .game-title {
@@ -158,11 +160,20 @@
             color: #f0f0f0;
         }
         
-        iframe {
-            width: 100%;
-            height: 100%;
+        .play-btn {
+            background: #e94560;
+            color: white;
             border: none;
-            border-radius: 8px;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            font-size: 1.2rem;
+        }
+        
+        .play-btn:hover {
+            background: #ff2e63;
         }
         
         footer {
@@ -307,7 +318,11 @@
             
             const game = gameSources[gameId];
             gameTitle.textContent = game.title;
-            gameContainer.innerHTML = `<iframe src="${game.url}" allowfullscreen></iframe>`;
+            gameContainer.innerHTML = `
+                <p>Click below to play ${game.title} in a new tab:</p>
+                <button class="play-btn" onclick="window.open('${game.url}', '_blank')">Play Now</button>
+                <p>Return here after playing to try another game!</p>
+            `;
         }
         
         function closeGame() {
