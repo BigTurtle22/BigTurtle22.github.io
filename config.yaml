@@ -1,0 +1,72 @@
+server:
+  listen_addr: "0.0.0.0:2222"         # Port where filter listens (do not use 22 directly)
+  ssh_port: 22                        # Internal SSH port to forward legit traffic to
+  max_connections: 1000              # High throughput capacity
+  read_timeout: 30                   # SSH read timeout in seconds
+  write_timeout: 30                  # SSH write timeout in seconds
+  buffer_size: 4096                  # 4KB buffer per stream
+
+security:
+  max_failures: 3                    # Failures before ban
+  ban_duration: 3600                 # Ban duration in seconds (1 hour)
+  rate_limit: 10                     # Max 10 connections/IP/sec
+  allowed_countries:                # Only these are permitted
+    - US
+    - CA
+    - GB
+    - DE
+    - FR
+    - SE
+    - NO
+    - JP
+  blocked_countries:                # These are hard blocked
+    - CN
+    - RU
+    - KP
+    - IR
+    - VN
+    - BY
+    - SY
+  block_tor: true                    # Block all known Tor exit nodes
+  block_vpn: true                    # Block all VPN/proxy networks
+  min_key_size: 2048                # Enforce secure key sizes
+  allowed_algorithms:               # Only ultra-secure KEX algorithms
+    - diffie-hellman-group14-sha256
+    - diffie-hellman-group16-sha512
+    - ecdh-sha2-nistp256
+    - ecdh-sha2-nistp384
+    - ecdh-sha2-nistp521
+  honeypot_enabled: true            # Activate full honeypot system
+  tarpit_delay: 5                   # Delay response to suspected attacker (seconds)
+
+ml:
+  enabled: true
+  model_path: "./models/ssh_anomaly.json"     # File to store ML model
+  training_data: "./data/training.json"       # File to store training samples
+  anomaly_threshold: 0.70                     # Threshold above which traffic is blocked
+  update_interval: 3600                       # Retrain ML model every hour
+  feature_window: 100                         # Track 100 recent vectors per IP
+
+logging:
+  level: "INFO"                               # DEBUG, INFO, WARN, ERROR
+  file: "./logs/ssh_filter.log"               # Log file path
+  max_size: 100                               # Max log size in MB
+  syslog: true                                # Also log to syslog
+  siem_endpoint: "https://your-siem.example.com/api/events" # Optional: SIEM webhook target
+
+database:
+  path: "./data/ssh_filter.db"                # SQLite file path
+  max_connections: 10                         # DB connection pool size
+  backup_interval: 3600                       # Backup DB every hour
+
+intelligence:
+  update_interval: 3600                       # Update all feeds hourly
+  maxmind_key: ""                             # Optional MaxMind GeoIP license key
+  threat_feeds:                               # External threat intel IP blocklists
+    - "https://reputation.alienvault.com/reputation.data"
+    - "https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist"
+    - "https://rules.emergingthreats.net/blockrules/compromised-ips.txt"
+    - "https://www.spamhaus.org/drop/drop.txt"
+    - "https://check.torproject.org/exit-addresses"
+  tor_node_list_url: "https://check.torproject.org/exit-addresses"
+  vpn_ranges_url: "https://raw.githubusercontent.com/X4BNet/lists_vpn/main/ipv4.txt"
